@@ -17,5 +17,6 @@ runs:
     - name: Uninstall Temurin Java
       shell: bash
       run: |
+        echo "JAVA_HOME=" >> "${GITHUB_ENV}"
         sudo apt-get --yes purge temurin-*
 
