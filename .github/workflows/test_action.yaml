@@ -3,18 +3,19 @@ name: Test Action
 on: [push]
 
 jobs:
-  get-num-square:
-    runs-on: ubuntu-latest
-    name: Return's the number square
+  pristine-ubuntu:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-22.04
+          - ubuntu-22.04-arm
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+    runs-on: ${{ matrix.os }}
+    name: Test cleaned Ubuntu
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Fetch num squared
-        id: get_square
+      - name: Clean Ubuntu
+        if: ${{ runner.environment == 'github-hosted' }}
         uses: ./ # Uses an action in the root directory
-        # or use a released Github Action
-        # uses: shipyard/github-action/fetch-shipyard-env@1.0.0
-        with:
-          num: 11
-      - name: Print the square
-        run: echo "${{ steps.get_square.outputs.num_squared }}"

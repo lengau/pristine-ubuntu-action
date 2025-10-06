@@ -1,31 +1,21 @@
 # action.yaml
-name: 'Custom Github Action'
-description: 'A Github Action that takes an input and returns the square of the number'
-inputs:
-  num:
-    description: 'Enter a number'
-    required: true
-    default: "1"
-outputs:
-  num_squared:
-    description: 'Square of the input'
-    # need to specify the extra `value` field for `composite` actions
-    value: ${{ steps.get-square.outputs.num_squared }}
+name: Pristine Ubuntu
+description: Remove the clutter from GitHub's hosted Ubuntu runners
 runs:
   using: 'composite'
   steps:
-    - name: Install Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-    - name: Install Dependencies
-      run: pip install -r requirements.txt
+    - name: Delete the Android SDK
       shell: bash
-    - name: Pass Inputs to Shell
+      id: android-sdk
       run: |
-          echo "INPUT_NUM=${{ inputs.num }}" >> $GITHUB_ENV
+        nohup sudo rm -rf /usr/local/lib/android/ >& /dev/null &
+    - name: Delete local binaries
       shell: bash
-    - name: Fetch the number's square
-      id: get-square
-      run: python src/get_num_square.py
+      id: local-bins
+      run: |
+        nohup sudo rm -f /usr/local/bin/* >& /dev/null &
+    - name: Uninstall Temurin Java
       shell: bash
+      run: |
+        sudo apt-get --yes purge temurin-*
+
