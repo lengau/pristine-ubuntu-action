@@ -19,3 +19,7 @@ jobs:
       - name: Clean Ubuntu
         if: ${{ runner.environment == 'github-hosted' }}
         uses: ./ # Uses an action in the root directory
+      - name: Setup go (v5)
+        uses: actions/setup-go@v5
+      - name: Setup go (v6)
+        uses: actions/setup-go@v5
