@@ -3,7 +3,7 @@ name: Test Action
 on: [push]
 
 jobs:
-  pristine-ubuntu:
+  correct:
     strategy:
       matrix:
         os:
@@ -19,7 +19,7 @@ jobs:
           - keep-chromedriver
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: Test cleaned Ubuntu
+    name: Correctness
     steps:
       - name: Check disk space
         run: |
@@ -77,6 +77,30 @@ jobs:
         run: |
           df -h
 
+  setup-works:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-22.04
+          - ubuntu-22.04-arm
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    name: Actions work
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Clean Ubuntu
+        if: ${{ runner.environment == 'github-hosted' }}
+        uses: ./ # Uses an action in the root directory
+
+      - name: Wait for all deletions to complete
+        run: |
+          while pgrep -x rm; do
+            sleep 1
+          done
+
       # Check that setup jobs still work
       - name: Setup go (v5)
         uses: actions/setup-go@v5
@@ -95,7 +119,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: microsoft
-          java-version: 25
+          java-version: 21
       - name: Setup node (v4)
         uses: actions/setup-node@v4
       - name: Setup node (v5)
@@ -108,4 +132,3 @@ jobs:
         uses: actions/setup-python@v5
       - name: Setup python (v6)
         uses: actions/setup-python@v6
-
