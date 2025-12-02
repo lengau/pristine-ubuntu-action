@@ -11,6 +11,8 @@ inputs:
     default: ''
   keep-rustup:
     default: ''
+  keep-azure:
+    default: ''
 
 runs:
   using: 'composite'
@@ -46,6 +48,15 @@ runs:
       if: ${{ inputs.keep-rustup == '' }}
       run: |
         rm -rf ~/.cargo/bin ~/.rustup &
+    - name: Remove Azure CLI
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-azure-cli.sh
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-azure-devops-cli.sh
+      shell: bash
+      if: ${{ inputs.keep-azure == '' }}
+      id: azure-cli
+      run: |
+        sudo apt-get --yes purge azure-cli
+        sudo rm -rf /opt/az
     - name: Uninstall Temurin Java (including ant)
       shell: bash
       id: temurin
