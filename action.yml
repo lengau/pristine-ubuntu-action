@@ -5,7 +5,6 @@ description: Remove the clutter from GitHub's hosted Ubuntu runners
 inputs:
   keep-android:
     description: Opt into keeping the Android SDK
-    type: boolean
     default: ''
 
 runs:
@@ -15,9 +14,9 @@ runs:
       # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-android-sdk.sh
       shell: bash
       id: delete-files
-      if: ${{ inputs.keep-android != false }}
       run: |
-        if [[ ${{ inputs.keep-android }} != '' ]]; then
+        if [[ '${{ inputs.keep-android }}' == '' ]]; then
+          echo "Deleting Android SDK"
           sudo rm -rf /usr/local/lib/android &
         fi
         sudo rm -rf /usr/local/share/chromedriver-linux64 /usr/local/share/chromium &
