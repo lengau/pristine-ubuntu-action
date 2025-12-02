@@ -57,7 +57,15 @@ runs:
       if: ${{ inputs.keep-azure == '' }}
       id: azure-cli
       run: |
-        sudo apt-get --yes purge azure-cli || true
+        # Only suppress "not installed" error, surface unexpected errors
+        if ! sudo apt-get --yes purge azure-cli; then
+          if ! apt list --installed 2>/dev/null | grep -q '^azure-cli/'; then
+            echo "azure-cli not installed, ignoring error."
+          else
+            echo "Unexpected error removing azure-cli" >&2
+            exit 1
+          fi
+        fi
         sudo rm -rf /opt/az ~/.azure
     - name: Uninstall Temurin Java (including ant)
       shell: bash
