@@ -16,7 +16,7 @@ runs:
       id: android-sdk
       if: ${{ inputs.keep-android != '' }}
       run: |
-        nohup sudo rm -rf /usr/local/lib/android/ >& /dev/null &
+        nohup sudo rm -rf /usr/local/lib/android >& /dev/null &
     - name: Delete local binaries
       shell: bash
       id: local-bins

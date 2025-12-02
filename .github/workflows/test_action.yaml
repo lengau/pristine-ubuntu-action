@@ -11,17 +11,31 @@ jobs:
           - ubuntu-22.04-arm
           - ubuntu-24.04
           - ubuntu-24.04-arm
+        keep-android:
+          - ''
+          - 'true'
+      fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Test cleaned Ubuntu
     steps:
       - name: Check disk space
         run: |
           df -h
+      - name: Check if relevant test directories exist
+        id: dirs
+        run: |
+          if [[ -d /usr/local/lib/android ]]; then
+            echo "android=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "android=false" >> "${GITHUB_OUTPUT}"
+          fi
       - name: Checkout
         uses: actions/checkout@v2
       - name: Clean Ubuntu
         if: ${{ runner.environment == 'github-hosted' }}
         uses: ./ # Uses an action in the root directory
+        with:
+          keep-android: ${{ matrix.keep-android }}
       - name: Check disk space immediately after run (not waiting for completion)
         run: |
           df -h
@@ -55,7 +69,26 @@ jobs:
         uses: actions/setup-python@v5
       - name: Setup python (v6)
         uses: actions/setup-python@v6
+
+      - name: Wait for all deletions to complete
+        run: |
+          while pgrep -x rm; do
+            sleep 1
+          done
+      - name: Check that the Android SDK still exists
+        if: ${{ matrix.keep-android != '' && steps.dirs.outputs.android == 'true' }}
+        run: |
+          ls -l /usr/local/lib/android/
+      - name: Check that the Android SDK is removed
+        if: ${{ matrix.keep-android == '' }}
+        run: |
+          if [[ -d /usr/local/lib/android/ ]]; then
+            ls -l /usr/local/lib/android
+            exit 1
+          fi
+
       - name: Check disk space at end
+        if: always()
         run: |
           df -h
 
