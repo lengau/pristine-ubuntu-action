@@ -4,24 +4,30 @@ description: Remove the clutter from GitHub's hosted Ubuntu runners
 
 inputs:
   keep-android:
-    description: Opt into keeping the Android SDK
+    description: Opt into keeping the Android SDK. (Any non-empty value)
+    default: ''
+  keep-chromedriver:
+    description: Opt into keeping Chromedriver. (Any non-empty value)
     default: ''
 
 runs:
   using: 'composite'
   steps:
-    - name: File deletions
+    - name: Delete Android SDK
       # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-android-sdk.sh
       shell: bash
-      id: delete-files
+      id: android
+      if: ${{ inputs.keep-android == '' }}
       run: |
-        if [[ '${{ inputs.keep-android }}' == '' ]]; then
-          echo "Deleting Android SDK"
-          sudo rm -rf /usr/local/lib/android &
-        fi
+        echo Deleting Android SDK
+        sudo rm -rf /usr/local/lib/android &
+    - name: Delete Chromedriver
+      shell: bash
+      id: chromedriver
+      if: ${{ inputs.keep-chromedriver == '' }}
+      run: |
+        echo Deleting Chromedriver
         sudo rm -rf /usr/local/share/chromedriver-linux64 /usr/local/share/chromium &
-
-        while fg; do true; done
     - name: Remove Julia
       # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-julia.sh
       shell: bash

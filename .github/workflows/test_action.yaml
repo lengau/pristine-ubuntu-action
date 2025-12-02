@@ -14,6 +14,9 @@ jobs:
         keep-android:
           - ''
           - keep-android
+        keep-chromedriver:
+          - ''
+          - keep-chromedriver
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Test cleaned Ubuntu
@@ -24,11 +27,15 @@ jobs:
       - name: Check if relevant test directories exist
         id: dirs
         run: |
-          if [[ -d /usr/local/lib/android ]]; then
-            echo "android=true" >> "${GITHUB_OUTPUT}"
-          else
-            echo "android=false" >> "${GITHUB_OUTPUT}"
-          fi
+          function exists(){
+            name="$1"
+            dir="$2"
+            if [[ -d "${dir}" ]]; then
+              echo "${name}=exists" >> "${GITHUB_OUTPUT}"
+            fi
+          }
+          exists android /usr/local/lib/android
+          exists chromedriver /usr/local/share/chromium
       - name: Checkout
         uses: actions/checkout@v2
       - name: Clean Ubuntu
@@ -36,6 +43,7 @@ jobs:
         uses: ./ # Uses an action in the root directory
         with:
           keep-android: ${{ matrix.keep-android }}
+          keep-chromedriver: ${{ matrix.keep-chromedriver }}
       - name: Check disk space immediately after run (not waiting for completion)
         run: |
           df -h
@@ -45,18 +53,25 @@ jobs:
           while pgrep -x rm; do
             sleep 1
           done
-      - name: Check that the Android SDK still exists
-        if: ${{ matrix.keep-android != '' && steps.dirs.outputs.android == 'true' }}
-        run: |
-          ls -l /usr/local/lib/android/
-      - name: Check that the Android SDK is removed
-        if: ${{ matrix.keep-android == '' }}
-        run: |
-          if [[ -d /usr/local/lib/android/ ]]; then
-            find /usr/local/lib/android
-            exit 1
-          fi
 
+      - name: Check for correct deletion behaviour
+        run: |
+          function check_dir(){
+            if [[ "$1" != *exists ]]; then
+              return
+            fi
+            if [[ "$1" == keep-* ]]; then
+              ls -l "$2"
+            else
+              if [[ -d "$2" ]]; then
+                find "$2"
+                exit 1
+              fi
+            fi
+          }
+
+          check_dir '${{ matrix.keep-android }}${{ steps.dirs.outputs.android }}' /usr/local/lib/android
+          check_dir '${{ matrix.keep-chromedriver }}${{ steps.dirs.outputs.chromedriver }}' /usr/local/share/chromium
       - name: Check disk space at end
         if: always()
         run: |
