@@ -84,7 +84,7 @@ jobs:
           check_dir '${{ matrix.keep-android }}${{ steps.dirs.outputs.android }}' /usr/local/lib/android
           check_dir '${{ matrix.keep-rustup }}${{ steps.dirs.outputs.rustup }}' "${HOME}/.rustup"
           check_dir '${{ matrix.keep-azure }}${{ steps.dirs.outputs.azure }}' /opt/az
-          check_dir '${{ matrix.keep-ansible }}${{ steps.dirs.outputs.ansible }}' /opt/pipx/venvs/ansible
+          check_dir '${{ matrix.keep-ansible }}${{ steps.dirs.outputs.ansible }}' /opt/pipx/venvs/ansible-core
       - name: Check disk space at end
         if: always()
         run: |
