@@ -37,11 +37,11 @@ runs:
         if [[ -L /usr/bin/julia ]]; then
           sudo rm /usr/bin/julia
         fi
-    - name: Uninstall Temurin Java
+    - name: Uninstall Temurin Java (including ant)
       shell: bash
       id: temurin
       run: |
         echo "JAVA_HOME=" >> "${GITHUB_ENV}"
-        sudo apt-get --yes purge temurin-*
+        sudo apt-get --yes purge temurin-* ant default-jre-headless
 
 
