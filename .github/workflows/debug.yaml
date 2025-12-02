@@ -7,12 +7,22 @@ on:
         default: 'ubuntu-latest'
         required: false
         type: string
+      run-first:
+        description: "Run the action before enabling ssh"
+        type: boolean
+        default: false
 
 
 jobs:
   debug:
     runs-on: ${{ inputs.os }}
     steps:
+      - name: Checkout
+        if: ${{ inputs.run-first }}
+        uses: actions/checkout@v2
+      - name: Clean Ubuntu
+        if: ${{ inputs.run-first }}
+        uses: ./ # Uses an action in the root directory
       - name: Enable ssh access
         uses: mxschmitt/action-tmate@v3
         with:
