@@ -10,8 +10,10 @@ inputs:
     description: Keep Chromedriver
     default: ''
   keep-rustup:
+    description: Keep rustup
     default: ''
   keep-azure:
+    description: Keep Azure CLI
     default: ''
 
 runs:
@@ -56,7 +58,7 @@ runs:
       id: azure-cli
       run: |
         sudo apt-get --yes purge azure-cli || true
-        sudo rm -rf /opt/az
+        sudo rm -rf /opt/az ~/.azure
     - name: Uninstall Temurin Java (including ant)
       shell: bash
       id: temurin
