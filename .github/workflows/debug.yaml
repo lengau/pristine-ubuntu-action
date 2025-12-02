@@ -1,0 +1,19 @@
+name: Investigate runner
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: "The workflow runner to use"
+        default: 'ubuntu-latest'
+        required: false
+        type: string
+
+
+jobs:
+  debug:
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Enable ssh access
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
