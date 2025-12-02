@@ -5,6 +5,7 @@ runs:
   using: 'composite'
   steps:
     - name: Delete the Android SDK
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-android-sdk.sh
       shell: bash
       id: android-sdk
       run: |
@@ -16,7 +17,24 @@ runs:
         nohup sudo rm -f /usr/local/bin/* >& /dev/null &
     - name: Uninstall Temurin Java
       shell: bash
+      id: temurin
       run: |
         echo "JAVA_HOME=" >> "${GITHUB_ENV}"
         sudo apt-get --yes purge temurin-* &
+    - name: Remove Chromedriver
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-google-chrome.sh
+      shell: bash
+      id: chromedriver
+      run: |
+        nohup sudo rm -rf /usr/local/share/chromedriver-linux64 >& /dev/null &
+        nohup sudo rm -rf /usr/local/share/chromium >& /dev/null &
+    - name: Remove Julia
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-julia.sh
+      shell: bash
+      run: |
+        nohup sudo rm -rf /usr/local/julia* >& /dev/null &
+        if [[ -L /usr/bin/julia ]]; then
+          sudo rm /usr/bin/julia
+        fi
+
 
