@@ -73,5 +73,18 @@ runs:
       run: |
         echo "JAVA_HOME=" >> "${GITHUB_ENV}"
         sudo apt-get --yes purge temurin-* ant default-jre-headless
-
-
+    - name: Remove Edge
+      shell: bash
+      id: edge
+      run: |
+        sudo apt-get --yes purge microsoft-edge-stable
+    - name: Remove Firefox
+      shell: bash
+      id: firefox
+      run: |
+        sudo apt-get --yes purge firefox
+    - name: Remove Chrome
+      shell: bash
+      id: chrome
+      run: |
+        sudo apt-get --yes purge google-chrome-stable
