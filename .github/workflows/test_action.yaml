@@ -22,6 +22,7 @@ jobs:
         keep-android: ['', keep-android]
         keep-rustup: ['', keep-rustup]
         keep-azure: ['', keep-azure]
+        keep-powershell: ['', keep-powershell]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Correctness
@@ -43,6 +44,7 @@ jobs:
           exists chromedriver /usr/local/share/chromium
           exists rustup "${HOME}/.rustup"
           exists azure /opt/az
+          exists powershell /usr/local/share/powershell
       - name: Checkout
         uses: actions/checkout@v2
       - name: Clean Ubuntu
@@ -81,6 +83,7 @@ jobs:
           check_dir '${{ matrix.keep-android }}${{ steps.dirs.outputs.android }}' /usr/local/lib/android
           check_dir '${{ matrix.keep-rustup }}${{ steps.dirs.outputs.rustup }}' "${HOME}/.rustup"
           check_dir '${{ matrix.keep-azure }}${{ steps.dirs.outputs.azure }}' /opt/az
+          check_dir '${{ matrix.keep-powershell }}${{ steps.dirs.outputs.powershell }}' /usr/local/share/powershell
       - name: Check disk space at end
         if: always()
         run: |

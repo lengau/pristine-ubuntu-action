@@ -12,6 +12,9 @@ inputs:
   keep-azure:
     description: Keep Azure CLI
     default: ''
+  keep-powershell:
+    description: Keep Powershell
+    default: ''
 
 runs:
   using: 'composite'
@@ -94,3 +97,11 @@ runs:
             fi
           fi
         done
+    - name: Delete Powershell
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-powershell.sh
+      shell: bash
+      id: android
+      if: ${{ inputs.keep-powershell == '' }}
+      run: |
+        sudo rm -rf /usr/local/share/powershell &
+        sudo apt-get --yes purge powershell
