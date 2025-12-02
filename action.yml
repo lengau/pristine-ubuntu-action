@@ -13,7 +13,7 @@ inputs:
     description: Keep Azure CLI
     default: ''
   keep-ansible:
-    description: Keep ansible
+    description: Keep Ansible
     default: ''
 
 runs:
@@ -100,6 +100,7 @@ runs:
     - name: Remove ansible
       # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-pipx-packages.sh
       shell: bash
+      if: ${{ inputs.keep-ansible == '' }}
       id: ansible
       run: |
         sudo rm -rf /opt/pipx_bin/ansible* /opt/pipx/venvs/ansible-core &
