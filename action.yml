@@ -73,18 +73,19 @@ runs:
       run: |
         echo "JAVA_HOME=" >> "${GITHUB_ENV}"
         sudo apt-get --yes purge temurin-* ant default-jre-headless
-    - name: Remove Edge
+    - name: Remove browsers
       shell: bash
-      id: edge
+      id: browsers
       run: |
-        sudo apt-get --yes purge microsoft-edge-stable
-    - name: Remove Firefox
-      shell: bash
-      id: firefox
-      run: |
-        sudo apt-get --yes purge firefox
-    - name: Remove Chrome
-      shell: bash
-      id: chrome
-      run: |
-        sudo apt-get --yes purge google-chrome-stable
+        PACKAGES="microsoft-edge-stable firefox google-chrome-stable"
+        for pkg in $PACKAGES; do
+          # Only suppress "not installed" error, surface unexpected errors
+          if ! sudo apt-get --yes purge "$pkg"; then
+            if ! apt list --installed 2>/dev/null | grep -q "^$pkg/"; then
+              echo "$pkg not installed, ignoring error."
+            else
+              echo "Unexpected error removing $pkg" >&2
+              exit 1
+            fi
+          fi
+        done
