@@ -1,6 +1,12 @@
 # action.yaml
 name: Pristine Ubuntu
 description: Remove the clutter from GitHub's hosted Ubuntu runners
+
+inputs:
+  keep-android:
+    description: Opt into keeping the Android SDK
+    default: ''
+
 runs:
   using: 'composite'
   steps:
@@ -8,6 +14,7 @@ runs:
       # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-android-sdk.sh
       shell: bash
       id: android-sdk
+      if: ${{ inputs.keep-android != '' }}
       run: |
         nohup sudo rm -rf /usr/local/lib/android/ >& /dev/null &
     - name: Delete local binaries
@@ -15,12 +22,6 @@ runs:
       id: local-bins
       run: |
         nohup sudo rm -f /usr/local/bin/* >& /dev/null &
-    - name: Uninstall Temurin Java
-      shell: bash
-      id: temurin
-      run: |
-        echo "JAVA_HOME=" >> "${GITHUB_ENV}"
-        sudo apt-get --yes purge temurin-* &
     - name: Remove Chromedriver
       # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-google-chrome.sh
       shell: bash
@@ -36,5 +37,11 @@ runs:
         if [[ -L /usr/bin/julia ]]; then
           sudo rm /usr/bin/julia
         fi
+    - name: Uninstall Temurin Java
+      shell: bash
+      id: temurin
+      run: |
+        echo "JAVA_HOME=" >> "${GITHUB_ENV}"
+        sudo apt-get --yes purge temurin-*
 
 
