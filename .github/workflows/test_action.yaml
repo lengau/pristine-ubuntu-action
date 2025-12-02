@@ -17,6 +17,7 @@ jobs:
         keep-chromedriver:
           - ''
           - keep-chromedriver
+        keep-rustup: ['', keep-rustup]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Correctness
@@ -36,6 +37,7 @@ jobs:
           }
           exists android /usr/local/lib/android
           exists chromedriver /usr/local/share/chromium
+          exists rustup "${HOME}/.rustup"
       - name: Checkout
         uses: actions/checkout@v2
       - name: Clean Ubuntu
@@ -44,6 +46,7 @@ jobs:
         with:
           keep-android: ${{ matrix.keep-android }}
           keep-chromedriver: ${{ matrix.keep-chromedriver }}
+          keep-rustup: ${{ matrix.keep-rustup }}
       - name: Check disk space immediately after run (not waiting for completion)
         run: |
           df -h
@@ -72,6 +75,7 @@ jobs:
 
           check_dir '${{ matrix.keep-android }}${{ steps.dirs.outputs.android }}' /usr/local/lib/android
           check_dir '${{ matrix.keep-chromedriver }}${{ steps.dirs.outputs.chromedriver }}' /usr/local/share/chromium
+          check_dir '${{ matrix.keep-rustup }}${{ steps.dirs.outputs.rustup }}' "${HOME}/.rustup"
       - name: Check disk space at end
         if: always()
         run: |

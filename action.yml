@@ -4,10 +4,12 @@ description: Remove the clutter from GitHub's hosted Ubuntu runners
 
 inputs:
   keep-android:
-    description: Opt into keeping the Android SDK. (Any non-empty value)
+    description: Keep Android SDK
     default: ''
   keep-chromedriver:
-    description: Opt into keeping Chromedriver. (Any non-empty value)
+    description: Keep Chromedriver
+    default: ''
+  keep-rustup:
     default: ''
 
 runs:
@@ -37,6 +39,13 @@ runs:
         if [[ -L /usr/bin/julia ]]; then
           sudo rm /usr/bin/julia
         fi
+    - name: Remove rustup
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-rust.sh
+      shell: bash
+      id: rustup
+      if: ${{ inputs.keep-rustup == '' }}
+      run: |
+        rm -rf ~/.cargo/bin ~/.rustup &
     - name: Uninstall Temurin Java (including ant)
       shell: bash
       id: temurin
