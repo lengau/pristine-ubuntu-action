@@ -55,7 +55,7 @@ runs:
       if: ${{ inputs.keep-azure == '' }}
       id: azure-cli
       run: |
-        sudo apt-get --yes purge azure-cli
+        sudo apt-get --yes purge azure-cli || true
         sudo rm -rf /opt/az
     - name: Uninstall Temurin Java (including ant)
       shell: bash
