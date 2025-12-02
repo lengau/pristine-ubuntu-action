@@ -23,6 +23,7 @@ jobs:
         keep-rustup: ['', keep-rustup]
         keep-azure: ['', keep-azure]
         keep-powershell: ['', keep-powershell]
+        keep-ansible: ['', keep-ansible]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Correctness
@@ -45,6 +46,7 @@ jobs:
           exists rustup "${HOME}/.rustup"
           exists azure /opt/az
           exists powershell /usr/local/share/powershell
+          exists ansible /opt/pipx/venvs/ansible-core
       - name: Checkout
         uses: actions/checkout@v2
       - name: Clean Ubuntu
@@ -55,6 +57,7 @@ jobs:
           keep-rustup: ${{ matrix.keep-rustup }}
           keep-azure: ${{ matrix.keep-azure }}
           keep-powershell: ${{ matrix.keep-powershell }}
+          keep-ansible: ${{ matrix.keep-ansible }}
       - name: Check disk space immediately after run (not waiting for completion)
         run: |
           df -h
@@ -85,6 +88,7 @@ jobs:
           check_dir '${{ matrix.keep-rustup }}${{ steps.dirs.outputs.rustup }}' "${HOME}/.rustup"
           check_dir '${{ matrix.keep-azure }}${{ steps.dirs.outputs.azure }}' /opt/az
           check_dir '${{ matrix.keep-powershell }}${{ steps.dirs.outputs.powershell }}' /usr/local/share/powershell
+          check_dir '${{ matrix.keep-ansible }}${{ steps.dirs.outputs.ansible }}' /opt/pipx/venvs/ansible-core
       - name: Check disk space at end
         if: always()
         run: |

@@ -14,6 +14,8 @@ inputs:
     default: ''
   keep-powershell:
     description: Keep Powershell
+  keep-ansible:
+    description: Keep Ansible
     default: ''
 
 runs:
@@ -114,3 +116,10 @@ runs:
           fi
         fi
         sudo rm -rf /usr/local/share/powershell
+    - name: Remove ansible
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-pipx-packages.sh
+      shell: bash
+      if: ${{ inputs.keep-ansible == '' }}
+      id: ansible
+      run: |
+        sudo rm -rf /opt/pipx_bin/ansible* /opt/pipx/venvs/ansible-core &
