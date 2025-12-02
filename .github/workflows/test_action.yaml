@@ -22,6 +22,7 @@ jobs:
         keep-android: ['', keep-android]
         keep-rustup: ['', keep-rustup]
         keep-azure: ['', keep-azure]
+        keep-ansible: ['', keep-ansible]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Correctness
@@ -43,6 +44,7 @@ jobs:
           exists chromedriver /usr/local/share/chromium
           exists rustup "${HOME}/.rustup"
           exists azure /opt/az
+          exists ansible /opt/pipx/venvs/ansible-core
       - name: Checkout
         uses: actions/checkout@v2
       - name: Clean Ubuntu
@@ -52,6 +54,7 @@ jobs:
           keep-android: ${{ matrix.keep-android }}
           keep-rustup: ${{ matrix.keep-rustup }}
           keep-azure: ${{ matrix.keep-azure }}
+          keep-ansible: ${{ matrix.keep-ansible }}
       - name: Check disk space immediately after run (not waiting for completion)
         run: |
           df -h
@@ -81,6 +84,7 @@ jobs:
           check_dir '${{ matrix.keep-android }}${{ steps.dirs.outputs.android }}' /usr/local/lib/android
           check_dir '${{ matrix.keep-rustup }}${{ steps.dirs.outputs.rustup }}' "${HOME}/.rustup"
           check_dir '${{ matrix.keep-azure }}${{ steps.dirs.outputs.azure }}' /opt/az
+          check_dir '${{ matrix.keep-ansible }}${{ steps.dirs.outputs.ansible }}' /opt/pipx/venvs/ansible-core
       - name: Check disk space at end
         if: always()
         run: |
