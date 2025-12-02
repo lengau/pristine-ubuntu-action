@@ -20,7 +20,6 @@ jobs:
           - ubuntu-24.04
           - ubuntu-24.04-arm
         keep-android: ['', keep-android]
-        keep-chromedriver: ['', keep-chromedriver]
         keep-rustup: ['', keep-rustup]
         keep-azure: ['', keep-azure]
       fail-fast: false
@@ -51,7 +50,6 @@ jobs:
         uses: ./ # Uses an action in the root directory
         with:
           keep-android: ${{ matrix.keep-android }}
-          keep-chromedriver: ${{ matrix.keep-chromedriver }}
           keep-rustup: ${{ matrix.keep-rustup }}
           keep-azure: ${{ matrix.keep-azure }}
       - name: Check disk space immediately after run (not waiting for completion)
@@ -81,7 +79,6 @@ jobs:
           }
 
           check_dir '${{ matrix.keep-android }}${{ steps.dirs.outputs.android }}' /usr/local/lib/android
-          check_dir '${{ matrix.keep-chromedriver }}${{ steps.dirs.outputs.chromedriver }}' /usr/local/share/chromium
           check_dir '${{ matrix.keep-rustup }}${{ steps.dirs.outputs.rustup }}' "${HOME}/.rustup"
           check_dir '${{ matrix.keep-azure }}${{ steps.dirs.outputs.azure }}' /opt/az
       - name: Check disk space at end

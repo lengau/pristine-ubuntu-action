@@ -6,9 +6,6 @@ inputs:
   keep-android:
     description: Keep Android SDK
     default: ''
-  keep-chromedriver:
-    description: Keep Chromedriver
-    default: ''
   keep-rustup:
     description: Keep rustup
     default: ''
@@ -73,10 +70,18 @@ runs:
       run: |
         echo "JAVA_HOME=" >> "${GITHUB_ENV}"
         sudo apt-get --yes purge temurin-* ant default-jre-headless
-    - name: Remove browsers
+    - name: Remove browsers and Selenium
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-firefox.sh
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-google-chrome.sh
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-microsoft-edge.sh
       shell: bash
       id: browsers
       run: |
+        sudo rm -rf /usr/local/share/gecko_driver /usr/bin/geckodriver &
+        sudo rm -rf /usr/local/share/chromedriver* /usr/bin/chromedriver /usr/local/share/chromium /usr/bin/chromium /usr/bin/chromium-browser &
+        sudo rm -rf /usr/local/share/edge_driver /usr/bin/msedgedriver &
+        sudo rm -rf /usr/share/java/selenium-server* &
+
         PACKAGES="microsoft-edge-stable firefox google-chrome-stable"
         for pkg in $PACKAGES; do
           # Only suppress "not installed" error, surface unexpected errors
