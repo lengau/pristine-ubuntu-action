@@ -36,7 +36,7 @@ We're happy to take bug reports and pull requests.
 
 To remove a tool, find where it's installed in the
 [runner-images build scripts](https://github.com/actions/runner-images/tree/main/images/ubuntu/scripts/build)
-and write a step in `action.yml` that reverses that. Include a `keep-<tool>` input
+and write a step in `action.yaml` that reverses that. Include a `keep-<tool>` input
 option if most people are going to want to remove the tool. If you think most people
 will want to keep the tool, flip that with a `remove-<tool>` option.
 
