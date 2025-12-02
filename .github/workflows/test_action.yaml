@@ -54,6 +54,7 @@ jobs:
           keep-android: ${{ matrix.keep-android }}
           keep-rustup: ${{ matrix.keep-rustup }}
           keep-azure: ${{ matrix.keep-azure }}
+          keep-powershell: ${{ matrix.keep-powershell }}
       - name: Check disk space immediately after run (not waiting for completion)
         run: |
           df -h

@@ -100,7 +100,7 @@ runs:
     - name: Delete Powershell
       # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-powershell.sh
       shell: bash
-      id: android
+      id: powershell
       if: ${{ inputs.keep-powershell == '' }}
       run: |
         sudo rm -rf /usr/local/share/powershell &
