@@ -1,6 +1,10 @@
 # .github/workflows/test_action.yaml
 name: Test Action
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   correct:
@@ -11,13 +15,10 @@ jobs:
           - ubuntu-22.04-arm
           - ubuntu-24.04
           - ubuntu-24.04-arm
-        keep-android:
-          - ''
-          - keep-android
-        keep-chromedriver:
-          - ''
-          - keep-chromedriver
+        keep-android: ['', keep-android]
+        keep-chromedriver: ['', keep-chromedriver]
         keep-rustup: ['', keep-rustup]
+        keep-azure: ['', keep-azure]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Correctness
@@ -38,6 +39,7 @@ jobs:
           exists android /usr/local/lib/android
           exists chromedriver /usr/local/share/chromium
           exists rustup "${HOME}/.rustup"
+          exists azure /opt/az
       - name: Checkout
         uses: actions/checkout@v2
       - name: Clean Ubuntu
@@ -47,6 +49,7 @@ jobs:
           keep-android: ${{ matrix.keep-android }}
           keep-chromedriver: ${{ matrix.keep-chromedriver }}
           keep-rustup: ${{ matrix.keep-rustup }}
+          keep-azure: ${{ matrix.keep-azure }}
       - name: Check disk space immediately after run (not waiting for completion)
         run: |
           df -h
@@ -76,6 +79,7 @@ jobs:
           check_dir '${{ matrix.keep-android }}${{ steps.dirs.outputs.android }}' /usr/local/lib/android
           check_dir '${{ matrix.keep-chromedriver }}${{ steps.dirs.outputs.chromedriver }}' /usr/local/share/chromium
           check_dir '${{ matrix.keep-rustup }}${{ steps.dirs.outputs.rustup }}' "${HOME}/.rustup"
+          check_dir '${{ matrix.keep-azure }}${{ steps.dirs.outputs.azure }}' /opt/az
       - name: Check disk space at end
         if: always()
         run: |

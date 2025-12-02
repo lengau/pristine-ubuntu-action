@@ -10,6 +10,10 @@ inputs:
     description: Keep Chromedriver
     default: ''
   keep-rustup:
+    description: Keep rustup
+    default: ''
+  keep-azure:
+    description: Keep Azure CLI
     default: ''
 
 runs:
@@ -46,6 +50,23 @@ runs:
       if: ${{ inputs.keep-rustup == '' }}
       run: |
         rm -rf ~/.cargo/bin ~/.rustup &
+    - name: Remove Azure CLI
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-azure-cli.sh
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-azure-devops-cli.sh
+      shell: bash
+      if: ${{ inputs.keep-azure == '' }}
+      id: azure-cli
+      run: |
+        # Only suppress "not installed" error, surface unexpected errors
+        if ! sudo apt-get --yes purge azure-cli; then
+          if ! apt list --installed 2>/dev/null | grep -q '^azure-cli/'; then
+            echo "azure-cli not installed, ignoring error."
+          else
+            echo "Unexpected error removing azure-cli" >&2
+            exit 1
+          fi
+        fi
+        sudo rm -rf /opt/az ~/.azure
     - name: Uninstall Temurin Java (including ant)
       shell: bash
       id: temurin
