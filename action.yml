@@ -12,6 +12,8 @@ inputs:
   keep-azure:
     description: Keep Azure CLI
     default: ''
+  keep-powershell:
+    description: Keep Powershell
   keep-ansible:
     description: Keep Ansible
     default: ''
@@ -97,6 +99,23 @@ runs:
             fi
           fi
         done
+    - name: Delete Powershell
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-powershell.sh
+      shell: bash
+      id: powershell
+      if: ${{ inputs.keep-powershell == '' }}
+      run: |
+        sudo rm -rf /usr/local/share/powershell &
+                # Only suppress "not installed" error, surface unexpected errors
+        if ! sudo apt-get --yes purge powershell; then
+          if ! apt list --installed 2>/dev/null | grep -q '^powershell/'; then
+            echo "powershell not installed, ignoring error."
+          else
+            echo "Unexpected error removing powershell" >&2
+            exit 1
+          fi
+        fi
+        sudo rm -rf /usr/local/share/powershell
     - name: Remove ansible
       # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-pipx-packages.sh
       shell: bash
