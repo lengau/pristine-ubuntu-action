@@ -1,6 +1,8 @@
 # action.yaml
 name: Pristine Ubuntu
 description: Remove the clutter from GitHub's hosted Ubuntu runners
+icon: thumbs-down
+color: gray-dark
 
 inputs:
   keep-android:
