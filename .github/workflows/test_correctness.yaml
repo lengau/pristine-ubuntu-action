@@ -24,6 +24,7 @@ jobs:
         keep-azure: ['', keep-azure]
         keep-powershell: ['', keep-powershell]
         keep-ansible: ['', keep-ansible]
+        keep-dotnet: ['', keep-dotnet]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Correctness (${{ matrix.os }}${{ matrix.keep-android && format(', {0}', matrix.keep-android) || '' }}${{ matrix.keep-rustup && format(', {0}', matrix.keep-rustup) || '' }}${{ matrix.keep-azure && format(', {0}', matrix.keep-azure) || '' }}${{ matrix.keep-powershell && format(', {0}', matrix.keep-powershell) || '' }}${{ matrix.keep-ansible && format(', {0}', matrix.keep-ansible) || '' }})
@@ -47,6 +48,7 @@ jobs:
           exists azure /opt/az
           exists powershell /usr/local/share/powershell
           exists ansible /opt/pipx/venvs/ansible-core
+          exists dotnet /usr/share/dotnet
       - name: Checkout
         uses: actions/checkout@v2
       - name: Clean Ubuntu
@@ -58,6 +60,7 @@ jobs:
           keep-azure: ${{ matrix.keep-azure }}
           keep-powershell: ${{ matrix.keep-powershell }}
           keep-ansible: ${{ matrix.keep-ansible }}
+          keep-dotnet: ${{ matrix.keep-dotnet }}
       - name: Check disk space immediately after run (not waiting for completion)
         run: |
           df -h
@@ -89,6 +92,27 @@ jobs:
           check_dir '${{ matrix.keep-azure }}${{ steps.dirs.outputs.azure }}' /opt/az
           check_dir '${{ matrix.keep-powershell }}${{ steps.dirs.outputs.powershell }}' /usr/local/share/powershell
           check_dir '${{ matrix.keep-ansible }}${{ steps.dirs.outputs.ansible }}' /opt/pipx/venvs/ansible-core
+          check_dir '${{ matrix.keep-dotnet }}${{ steps.dirs.outputs.dotnet }}' /usr/share/dotnet
+      - name: Check DOTNET environment variables were unset
+        if: ${{ matrix.keep-dotnet == '' && steps.dirs.outputs.dotnet == 'exists' }}
+        run: |
+          if [[ -n "${DOTNET_ROOT}" ]]; then
+            echo "DOTNET_ROOT should be unset but is: ${DOTNET_ROOT}"
+            exit 1
+          fi
+          if [[ -n "${DOTNET_SKIP_FIRST_TIME_EXPERIENCE}" ]]; then
+            echo "DOTNET_SKIP_FIRST_TIME_EXPERIENCE should be unset but is: ${DOTNET_SKIP_FIRST_TIME_EXPERIENCE}"
+            exit 1
+          fi
+          if [[ -n "${DOTNET_NOLOGO}" ]]; then
+            echo "DOTNET_NOLOGO should be unset but is: ${DOTNET_NOLOGO}"
+            exit 1
+          fi
+          if [[ -n "${DOTNET_MULTILEVEL_LOOKUP}" ]]; then
+            echo "DOTNET_MULTILEVEL_LOOKUP should be unset but is: ${DOTNET_MULTILEVEL_LOOKUP}"
+            exit 1
+          fi
+          echo "All DOTNET environment variables successfully unset"
       - name: Check disk space at end
         if: always()
         run: |
