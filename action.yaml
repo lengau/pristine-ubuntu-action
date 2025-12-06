@@ -24,6 +24,7 @@ inputs:
     default: ''
   keep-haskell:
     description: Keep Haskell
+    default: ''
   keep-homebrew:
     description: Keep Homebrew
     default: ''
