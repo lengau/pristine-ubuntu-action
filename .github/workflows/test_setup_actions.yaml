@@ -88,22 +88,11 @@ jobs:
           key: test2-${{ runner.os }}-${{ github.sha }}
 
       # Test upload/download artifact actions
-      - name: Create test artifact
-        run: echo "test content" > test-artifact.txt
-      - name: Test upload-artifact v3
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-artifact-v3-${{ matrix.os }}
-          path: test-artifact.txt
       - name: Test upload-artifact v4
         uses: actions/upload-artifact@v4
         with:
           name: test-artifact-v4-${{ matrix.os }}
           path: test-artifact.txt
-      - name: Test download-artifact v3
-        uses: actions/download-artifact@v3
-        with:
-          name: test-artifact-v3-${{ matrix.os }}
       - name: Test download-artifact v4
         uses: actions/download-artifact@v4
         with:
