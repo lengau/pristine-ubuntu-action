@@ -89,7 +89,7 @@ jobs:
           check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.ansible }}' /opt/pipx/venvs/ansible-core
           check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.dotnet }}' /usr/share/dotnet
       - name: Check DOTNET environment variables were unset
-        if: ${{ matrix.keep-dotnet == '' && steps.dirs.outputs.dotnet == 'exists' }}
+        if: ${{ matrix.keep-all == '' && steps.dirs.outputs.dotnet == 'exists' }}
         run: |
           if [[ -n "${DOTNET_ROOT}" ]]; then
             echo "DOTNET_ROOT should be unset but is: ${DOTNET_ROOT}"
