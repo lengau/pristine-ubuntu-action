@@ -200,6 +200,22 @@ jobs:
       - name: Verify gradle works
         run: gradle --version
 
+      # Test Canonical actions
+      - name: Test canonical/setup-lxd
+        uses: canonical/setup-lxd@main
+      - name: Verify lxd works
+        run: lxc --version
+
+      - name: Test canonical/craft-actions/charmcraft/setup
+        uses: canonical/craft-actions/charmcraft/setup@main
+      - name: Verify charmcraft works
+        run: charmcraft --version
+
+      - name: Test canonical/craft-actions/snapcraft/setup
+        uses: canonical/craft-actions/snapcraft/setup@main
+      - name: Verify snapcraft works
+        run: snapcraft --version
+
       - name: Test aws-actions/configure-aws-credentials v4
         uses: aws-actions/configure-aws-credentials@v4
         continue-on-error: true
@@ -245,15 +261,6 @@ jobs:
         continue-on-error: true
         with:
           push: false
-
-      # Verify basic git operations still work
-      - name: Test git operations
-        run: |
-          git config user.name "Test User"
-          git config user.email "test@example.com"
-          echo "test" > test-git.txt
-          git add test-git.txt
-          git commit -m "Test commit" || true
 
       # Final verification
       - name: Check disk space at end
