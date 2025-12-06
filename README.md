@@ -30,6 +30,7 @@ of the action to keep that particular item:
 - `keep-azure`
 - `keep-dotnet`
 - `keep-haskell`
+- `keep-homebrew`
 - `keep-rustup`
 
 ## Development

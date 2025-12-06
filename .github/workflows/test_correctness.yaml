@@ -45,6 +45,7 @@ jobs:
           exists ansible /opt/pipx/venvs/ansible-core
           exists dotnet /usr/share/dotnet
           exists haskell /usr/local/.ghcup
+          exists homebrew /home/linuxbrew/.linuxbrew
       - name: Checkout
         uses: actions/checkout@v2
       - name: Clean Ubuntu
@@ -58,6 +59,7 @@ jobs:
           keep-powershell: ${{ matrix.keep-all }}
           keep-ansible: ${{ matrix.keep-all }}
           keep-haskell: ${{ matrix.keep-all }}
+          keep-homebrew: ${{ matrix.keep-all }}
       - name: Check disk space immediately after run (not waiting for completion)
         run: |
           df -h
@@ -91,6 +93,7 @@ jobs:
           check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.ansible }}' /opt/pipx/venvs/ansible-core
           check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.dotnet }}' /usr/share/dotnet
           check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.haskell }}' /usr/local/.ghcup
+          check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.homebrew }}' /home/linuxbrew/.linuxbrew
       - name: Check DOTNET environment variables were unset
         if: ${{ matrix.keep-all == '' && steps.dirs.outputs.dotnet == 'exists' }}
         run: |

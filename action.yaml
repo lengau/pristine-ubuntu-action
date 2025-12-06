@@ -24,6 +24,8 @@ inputs:
     default: ''
   keep-haskell:
     description: Keep Haskell
+  keep-homebrew:
+    description: Keep Homebrew
     default: ''
 
 runs:
@@ -173,3 +175,11 @@ runs:
         sudo rm -rf /usr/local/.ghcup ~/.ghcup &
         # Remove binaries from PATH
         sudo rm -f /usr/local/bin/ghc* /usr/local/bin/cabal /usr/local/bin/stack &
+    - name: Remove Homebrew
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-homebrew.sh
+      shell: bash
+      if: ${{ inputs.keep-homebrew == '' }}
+      id: homebrew
+      run: |
+        echo "Removing Homebrew"
+        sudo rm -rf /home/linuxbrew/.linuxbrew &
