@@ -40,5 +40,5 @@ and write a step in `action.yaml` that reverses that. Include a `keep-<tool>` in
 option if most people are going to want to remove the tool. If you think most people
 will want to keep the tool, flip that with a `remove-<tool>` option.
 
-Modify the `test_action.yaml` workflow to ensure your configuration options behave as
+Modify the `test_correctness.yaml` workflow to ensure your configuration options behave as
 intended.

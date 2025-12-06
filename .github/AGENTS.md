@@ -21,8 +21,9 @@ This document provides instructions for AI coding agents, automated bots, and ag
 ├── README.md                # User documentation
 ├── .github/
 │   ├── workflows/
-│   │   ├── test_action.yaml # Test workflow
-│   │   └── debug.yaml       # Debug workflow
+│   │   ├── test_correctness.yaml     # Correctness test workflow
+│   │   ├── test_setup_actions.yaml   # Setup actions compatibility workflow
+│   │   └── debug.yaml                # Debug workflow
 │   └── AGENTS.md           # This file
 └── LICENSE
 ```
@@ -34,7 +35,8 @@ This document provides instructions for AI coding agents, automated bots, and ag
 Before making changes, read these files in order:
 1. `README.md` - Understand usage and purpose
 2. `action.yaml` - Review the action structure and cleanup steps
-3. `.github/workflows/test_action.yaml` - See how the action is tested
+3. `.github/workflows/test_correctness.yaml` - See how the action is tested for correctness
+4. `.github/workflows/test_setup_actions.yaml` - See how setup-* actions compatibility is tested
 
 ### 2. Key Concepts
 
@@ -102,7 +104,7 @@ When adding a new cleanup step to remove additional bloat:
    - Update the configuration section
 
 6. **Add tests**:
-   - Update `.github/workflows/test_action.yaml` to test the new option
+   - Update `.github/workflows/test_correctness.yaml` to test the new option
 
 ### Fixing Bugs
 
@@ -132,7 +134,7 @@ When adding a new cleanup step to remove additional bloat:
 
 ### How to Test
 1. Push changes to a branch
-2. Run the test workflow (`.github/workflows/test_action.yaml`)
+2. Run the test workflows (`.github/workflows/test_correctness.yaml` and `.github/workflows/test_setup_actions.yaml`)
 3. Review workflow logs for errors
 4. Verify disk space metrics
 5. Ensure subsequent steps in the workflow succeed
@@ -335,7 +337,8 @@ If you're an AI agent and encounter ambiguity:
 **Key Files:**
 - `action.yaml` - Main action (edit here for cleanup steps)
 - `README.md` - User docs (update when changing inputs)
-- `.github/workflows/test_action.yaml` - Tests (update when adding features)
+- `.github/workflows/test_correctness.yaml` - Correctness tests (update when adding features)
+- `.github/workflows/test_setup_actions.yaml` - Setup actions compatibility tests
 
 **Key Principles:**
 1. Always test on GitHub-hosted runners

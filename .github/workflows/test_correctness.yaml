@@ -1,5 +1,5 @@
-# .github/workflows/test_action.yaml
-name: Test Action
+# .github/workflows/test_correctness.yaml
+name: Test Correctness
 on:
   push:
     branches:
@@ -26,7 +26,7 @@ jobs:
         keep-ansible: ['', keep-ansible]
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: Correctness
+    name: Correctness (${{ matrix.os }}${{ matrix.keep-android && format(', {0}', matrix.keep-android) || '' }}${{ matrix.keep-rustup && format(', {0}', matrix.keep-rustup) || '' }}${{ matrix.keep-azure && format(', {0}', matrix.keep-azure) || '' }}${{ matrix.keep-powershell && format(', {0}', matrix.keep-powershell) || '' }}${{ matrix.keep-ansible && format(', {0}', matrix.keep-ansible) || '' }})
     steps:
       - name: Check disk space
         run: |
@@ -93,59 +93,3 @@ jobs:
         if: always()
         run: |
           df -h
-
-  setup-works:
-    strategy:
-      matrix:
-        os:
-          - ubuntu-22.04
-          - ubuntu-22.04-arm
-          - ubuntu-24.04
-          - ubuntu-24.04-arm
-      fail-fast: false
-    runs-on: ${{ matrix.os }}
-    name: Actions work
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Clean Ubuntu
-        if: ${{ runner.environment == 'github-hosted' }}
-        uses: ./ # Uses an action in the root directory
-
-      - name: Wait for all deletions to complete
-        run: |
-          while pgrep -x rm; do
-            sleep 1
-          done
-
-      # Check that setup jobs still work
-      - name: Setup go (v5)
-        uses: actions/setup-go@v5
-      - name: Setup go (v6)
-        uses: actions/setup-go@v5
-      - name: Setup dotnet (v4)
-        uses: actions/setup-dotnet@v4
-      - name: Setup dotnet (v5)
-        uses: actions/setup-dotnet@v5
-      - name: Setup java (v4)
-        uses: actions/setup-java@v4
-        with:
-          distribution: microsoft
-          java-version: 25
-      - name: Setup java (v5)
-        uses: actions/setup-java@v5
-        with:
-          distribution: microsoft
-          java-version: 21
-      - name: Setup node (v4)
-        uses: actions/setup-node@v4
-      - name: Setup node (v5)
-        uses: actions/setup-node@v5
-      - name: Setup node (v6)
-        uses: actions/setup-node@v6
-      - name: Setup python (v4)
-        uses: actions/setup-python@v4
-      - name: Setup python (v5)
-        uses: actions/setup-python@v5
-      - name: Setup python (v6)
-        uses: actions/setup-python@v6
