@@ -28,6 +28,7 @@ of the action to keep that particular item:
 - `keep-android`
 - `keep-ansible`
 - `keep-azure`
+- `keep-dotnet`
 - `keep-rustup`
 
 ## Development
