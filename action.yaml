@@ -31,6 +31,9 @@ inputs:
   keep-homebrew:
     description: Keep Homebrew
     default: ''
+  keep-nginx:
+    description: Keep Nginx
+    default: ''
 
 runs:
   using: 'composite'
@@ -196,3 +199,20 @@ runs:
       run: |
         echo "Removing Homebrew"
         sudo rm -rf /home/linuxbrew/.linuxbrew &
+    - name: Remove Nginx
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-nginx.sh
+      shell: bash
+      if: ${{ inputs.keep-nginx == '' }}
+      id: nginx
+      run: |
+        echo "Removing Nginx"
+        # Only suppress "not installed" error, surface unexpected errors
+        if ! sudo apt-get --yes purge nginx nginx-common nginx-core; then
+          if ! apt list --installed 2>/dev/null | grep -q '^nginx'; then
+            echo "nginx not installed, ignoring error."
+          else
+            echo "Unexpected error removing nginx" >&2
+            exit 1
+          fi
+        fi
+        sudo rm -rf /etc/nginx
