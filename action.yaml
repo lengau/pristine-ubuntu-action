@@ -227,7 +227,7 @@ runs:
       run: |
         echo "Removing PHP"
         # Find and purge PHP packages
-        PHP_PACKAGES=$(dpkg -l | grep -E '^ii\s+(php|libapache2-mod-php)' | awk '{print $2}' || true)
+        PHP_PACKAGES=$(dpkg -l | grep -E '^ii\s+(php|libapache2-mod-php|composer|phive)' | awk '{print $2}' || true)
         if [ -n "$PHP_PACKAGES" ]; then
           for pkg in $PHP_PACKAGES; do
             # Only suppress "not installed" error, surface unexpected errors
@@ -241,4 +241,4 @@ runs:
             fi
           done
         fi
-        sudo rm -rf /etc/php /usr/lib/php /usr/bin/php* /usr/sbin/php*
+        sudo rm -rf /etc/php /usr/lib/php /usr/bin/php* /usr/sbin/php* ~/.config/composer ~/.phive

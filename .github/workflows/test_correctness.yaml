@@ -48,6 +48,8 @@ jobs:
           exists miniconda /usr/share/miniconda
           exists homebrew /home/linuxbrew/.linuxbrew
           exists php /etc/php
+          exists composer "${HOME}/.config/composer"
+          exists phive "${HOME}/.phive"
       - name: Checkout
         uses: actions/checkout@v2
       - name: Clean Ubuntu
@@ -100,6 +102,8 @@ jobs:
           check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.miniconda }}' /usr/share/miniconda
           check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.homebrew }}' /home/linuxbrew/.linuxbrew
           check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.php }}' /etc/php
+          check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.composer }}' "${HOME}/.config/composer"
+          check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.phive }}' "${HOME}/.phive"
       - name: Check DOTNET environment variables were unset
         if: ${{ matrix.keep-all == '' && steps.dirs.outputs.dotnet == 'exists' }}
         run: |
