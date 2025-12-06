@@ -22,6 +22,9 @@ inputs:
   keep-dotnet:
     description: Keep .NET Core SDK
     default: ''
+  keep-homebrew:
+    description: Keep Homebrew
+    default: ''
 
 runs:
   using: 'composite'
@@ -160,3 +163,11 @@ runs:
         
         # Remove directory after packages are purged
         sudo rm -rf /usr/share/dotnet &
+    - name: Remove Homebrew
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-homebrew.sh
+      shell: bash
+      if: ${{ inputs.keep-homebrew == '' }}
+      id: homebrew
+      run: |
+        echo "Removing Homebrew"
+        sudo rm -rf /home/linuxbrew/.linuxbrew &
