@@ -19,14 +19,10 @@ jobs:
           - ubuntu-22.04-arm
           - ubuntu-24.04
           - ubuntu-24.04-arm
-        keep-android: ['', keep-android]
-        keep-rustup: ['', keep-rustup]
-        keep-azure: ['', keep-azure]
-        keep-powershell: ['', keep-powershell]
-        keep-ansible: ['', keep-ansible]
+        keep-all: ['', keep-all]
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: Correctness (${{ matrix.os }}${{ matrix.keep-android && format(', {0}', matrix.keep-android) || '' }}${{ matrix.keep-rustup && format(', {0}', matrix.keep-rustup) || '' }}${{ matrix.keep-azure && format(', {0}', matrix.keep-azure) || '' }}${{ matrix.keep-powershell && format(', {0}', matrix.keep-powershell) || '' }}${{ matrix.keep-ansible && format(', {0}', matrix.keep-ansible) || '' }})
+    name: Correctness (${{ matrix.os }}${{ matrix.keep-all && format(', {0}', matrix.keep-all) || '' }})
     steps:
       - name: Check disk space
         run: |
@@ -53,11 +49,11 @@ jobs:
         if: ${{ runner.environment == 'github-hosted' }}
         uses: ./ # Uses an action in the root directory
         with:
-          keep-android: ${{ matrix.keep-android }}
-          keep-rustup: ${{ matrix.keep-rustup }}
-          keep-azure: ${{ matrix.keep-azure }}
-          keep-powershell: ${{ matrix.keep-powershell }}
-          keep-ansible: ${{ matrix.keep-ansible }}
+          keep-android: ${{ matrix.keep-all }}
+          keep-rustup: ${{ matrix.keep-all }}
+          keep-azure: ${{ matrix.keep-all }}
+          keep-powershell: ${{ matrix.keep-all }}
+          keep-ansible: ${{ matrix.keep-all }}
       - name: Check disk space immediately after run (not waiting for completion)
         run: |
           df -h
@@ -84,11 +80,11 @@ jobs:
             fi
           }
 
-          check_dir '${{ matrix.keep-android }}${{ steps.dirs.outputs.android }}' /usr/local/lib/android
-          check_dir '${{ matrix.keep-rustup }}${{ steps.dirs.outputs.rustup }}' "${HOME}/.rustup"
-          check_dir '${{ matrix.keep-azure }}${{ steps.dirs.outputs.azure }}' /opt/az
-          check_dir '${{ matrix.keep-powershell }}${{ steps.dirs.outputs.powershell }}' /usr/local/share/powershell
-          check_dir '${{ matrix.keep-ansible }}${{ steps.dirs.outputs.ansible }}' /opt/pipx/venvs/ansible-core
+          check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.android }}' /usr/local/lib/android
+          check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.rustup }}' "${HOME}/.rustup"
+          check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.azure }}' /opt/az
+          check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.powershell }}' /usr/local/share/powershell
+          check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.ansible }}' /opt/pipx/venvs/ansible-core
       - name: Check disk space at end
         if: always()
         run: |
