@@ -147,7 +147,7 @@ runs:
         for pkg in $DOTNET_PACKAGES; do
           # Only suppress "not installed" error, surface unexpected errors
           if ! sudo apt-get --yes purge "$pkg"; then
-            if ! apt list --installed 2>/dev/null | grep -q "^$pkg/"; then
+            if ! apt list --installed 2>/dev/null | grep -qF "$pkg/"; then
               echo "$pkg not installed, ignoring error."
             else
               echo "Unexpected error removing $pkg" >&2
