@@ -22,6 +22,9 @@ inputs:
   keep-dotnet:
     description: Keep .NET Core SDK
     default: ''
+  keep-haskell:
+    description: Keep Haskell
+    default: ''
 
 runs:
   using: 'composite'
@@ -160,3 +163,13 @@ runs:
         
         # Remove directory after packages are purged
         sudo rm -rf /usr/share/dotnet &
+    - name: Remove Haskell
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-haskell.sh
+      shell: bash
+      if: ${{ inputs.keep-haskell == '' }}
+      id: haskell
+      run: |
+        echo "Removing Haskell"
+        sudo rm -rf /usr/local/.ghcup ~/.ghcup &
+        # Remove binaries from PATH
+        sudo rm -f /usr/local/bin/ghc* /usr/local/bin/cabal /usr/local/bin/stack &
