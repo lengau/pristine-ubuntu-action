@@ -23,7 +23,7 @@ inputs:
     description: Keep .NET Core SDK
     default: ''
   keep-haskell:
-    description: Keep Haskell
+    description: Keep Haskell (GHCup, GHC, Cabal, Stack)
     default: ''
   keep-homebrew:
     description: Keep Homebrew
