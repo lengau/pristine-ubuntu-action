@@ -214,20 +214,6 @@ jobs:
       - name: Verify snapcraft works
         run: snapcraft --version
 
-      - name: Test aws-actions/configure-aws-credentials v4
-        uses: aws-actions/configure-aws-credentials@v4
-        continue-on-error: true
-        with:
-          aws-region: us-east-1
-
-      - name: Test azure/login v2
-        uses: azure/login@v2
-        continue-on-error: true
-
-      - name: Test google-github-actions/auth v2
-        uses: google-github-actions/auth@v2
-        continue-on-error: true
-
       # Test coverage actions
       - name: Test codecov/codecov-action v4
         uses: codecov/codecov-action@v4
