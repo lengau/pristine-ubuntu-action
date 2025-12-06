@@ -29,6 +29,7 @@ of the action to keep that particular item:
 - `keep-ansible`
 - `keep-azure`
 - `keep-dotnet`
+- `keep-miniconda`
 - `keep-rustup`
 
 ## Development
