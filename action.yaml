@@ -135,7 +135,6 @@ runs:
       id: dotnet
       run: |
         echo "Removing .NET Core SDK"
-        sudo rm -rf /usr/share/dotnet &
         
         # Unset DOTNET environment variables
         echo "DOTNET_ROOT=" >> "${GITHUB_ENV}"
@@ -143,7 +142,7 @@ runs:
         echo "DOTNET_NOLOGO=" >> "${GITHUB_ENV}"
         echo "DOTNET_MULTILEVEL_LOOKUP=" >> "${GITHUB_ENV}"
         
-        # Remove dotnet-sdk packages
+        # Remove dotnet-sdk packages first
         DOTNET_PACKAGES=$(dpkg -l | grep -E '^ii\s+dotnet-sdk-' | awk '{print $2}' || true)
         for pkg in $DOTNET_PACKAGES; do
           # Only suppress "not installed" error, surface unexpected errors
@@ -156,3 +155,6 @@ runs:
             fi
           fi
         done
+        
+        # Remove directory after packages are purged
+        sudo rm -rf /usr/share/dotnet &
