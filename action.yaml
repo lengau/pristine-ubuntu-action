@@ -144,17 +144,19 @@ runs:
         
         # Remove dotnet-sdk packages first
         DOTNET_PACKAGES=$(dpkg -l | grep -E '^ii\s+dotnet-sdk-' | awk '{print $2}' || true)
-        for pkg in $DOTNET_PACKAGES; do
-          # Only suppress "not installed" error, surface unexpected errors
-          if ! sudo apt-get --yes purge "$pkg"; then
-            if ! apt list --installed 2>/dev/null | grep -qF "$pkg/"; then
-              echo "$pkg not installed, ignoring error."
-            else
-              echo "Unexpected error removing $pkg" >&2
-              exit 1
+        if [ -n "$DOTNET_PACKAGES" ]; then
+          for pkg in $DOTNET_PACKAGES; do
+            # Only suppress "not installed" error, surface unexpected errors
+            if ! sudo apt-get --yes purge "$pkg"; then
+              if ! apt list --installed 2>/dev/null | grep -q "^$pkg/"; then
+                echo "$pkg not installed, ignoring error."
+              else
+                echo "Unexpected error removing $pkg" >&2
+                exit 1
+              fi
             fi
-          fi
-        done
+          done
+        fi
         
         # Remove directory after packages are purged
         sudo rm -rf /usr/share/dotnet &
