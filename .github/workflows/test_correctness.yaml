@@ -47,6 +47,7 @@ jobs:
           exists haskell /usr/local/.ghcup
           exists miniconda /usr/share/miniconda
           exists homebrew /home/linuxbrew/.linuxbrew
+          exists php /etc/php
       - name: Checkout
         uses: actions/checkout@v2
       - name: Clean Ubuntu
@@ -62,6 +63,7 @@ jobs:
           keep-haskell: ${{ matrix.keep-all }}
           keep-miniconda: ${{ matrix.keep-all }}
           keep-homebrew: ${{ matrix.keep-all }}
+          keep-php: ${{ matrix.keep-all }}
       - name: Check disk space immediately after run (not waiting for completion)
         run: |
           df -h
@@ -97,6 +99,7 @@ jobs:
           check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.haskell }}' /usr/local/.ghcup
           check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.miniconda }}' /usr/share/miniconda
           check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.homebrew }}' /home/linuxbrew/.linuxbrew
+          check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.php }}' /etc/php
       - name: Check DOTNET environment variables were unset
         if: ${{ matrix.keep-all == '' && steps.dirs.outputs.dotnet == 'exists' }}
         run: |

@@ -34,6 +34,9 @@ inputs:
   keep-nginx:
     description: Keep Nginx
     default: ''
+  keep-php:
+    description: Keep PHP
+    default: ''
 
 runs:
   using: 'composite'
@@ -216,3 +219,26 @@ runs:
           fi
         fi
         sudo rm -rf /etc/nginx
+    - name: Remove PHP
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-php.sh
+      shell: bash
+      if: ${{ inputs.keep-php == '' }}
+      id: php
+      run: |
+        echo "Removing PHP"
+        # Find and purge PHP packages
+        PHP_PACKAGES=$(dpkg -l | grep -E '^ii\s+(php|libapache2-mod-php)' | awk '{print $2}' || true)
+        if [ -n "$PHP_PACKAGES" ]; then
+          for pkg in $PHP_PACKAGES; do
+            # Only suppress "not installed" error, surface unexpected errors
+            if ! sudo apt-get --yes purge "$pkg"; then
+              if ! apt list --installed 2>/dev/null | grep -q "^$pkg/"; then
+                echo "$pkg not installed, ignoring error."
+              else
+                echo "Unexpected error removing $pkg" >&2
+                exit 1
+              fi
+            fi
+          done
+        fi
+        sudo rm -rf /etc/php /usr/lib/php /usr/bin/php* /usr/sbin/php*
