@@ -199,11 +199,6 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       # Test Canonical actions
-      - name: Test canonical/setup-lxd
-        uses: canonical/setup-lxd@main
-      - name: Verify lxd works
-        run: lxc --version
-
       - name: Test canonical/craft-actions/charmcraft/setup
         uses: canonical/craft-actions/charmcraft/setup@main
       - name: Verify charmcraft works
