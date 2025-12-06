@@ -180,6 +180,7 @@ jobs:
 
       # Test super-linter
       - name: Test super-linter v7
+        if: ${{ runner.arch == 'X64' }}
         uses: super-linter/super-linter@v7
         continue-on-error: true
         env:
