@@ -172,9 +172,9 @@ runs:
       id: haskell
       run: |
         echo "Removing Haskell"
-        sudo rm -rf /usr/local/.ghcup ~/.ghcup &
+        sudo rm -rf /usr/local/.ghcup ~/.ghcup ~/.cabal &
         # Remove binaries from PATH
-        sudo rm -f /usr/local/bin/ghc* /usr/local/bin/cabal /usr/local/bin/stack &
+        sudo rm -f /usr/local/bin/ghc* /usr/local/bin/cabal /usr/local/bin/stack /usr/local/bin/haskell-language-server* &
     - name: Remove Homebrew
       # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-homebrew.sh
       shell: bash
