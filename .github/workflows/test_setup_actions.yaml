@@ -93,10 +93,6 @@ jobs:
         with:
           name: test-artifact-v4-${{ matrix.os }}
           path: test-artifact.txt
-      - name: Test download-artifact v4
-        uses: actions/download-artifact@v4
-        with:
-          name: test-artifact-v4-${{ matrix.os }}
 
       # Test setup actions
       - name: Test setup-go v5
