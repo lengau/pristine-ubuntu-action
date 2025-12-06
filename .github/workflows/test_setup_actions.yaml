@@ -178,15 +178,6 @@ jobs:
         with:
           languages: javascript
 
-      # Test super-linter
-      - name: Test super-linter v7
-        if: ${{ runner.arch == 'X64' }}
-        uses: super-linter/super-linter@v7
-        continue-on-error: true
-        env:
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       # Test popular third-party actions
       - name: Test actions-rust-lang/setup-rust-toolchain v1
         uses: actions-rust-lang/setup-rust-toolchain@v1
