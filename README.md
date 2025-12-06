@@ -31,6 +31,7 @@ of the action to keep that particular item:
 - `keep-dotnet`
 - `keep-haskell`
 - `keep-homebrew`
+- `keep-miniconda`
 - `keep-rustup`
 
 ## Development

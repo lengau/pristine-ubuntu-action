@@ -25,6 +25,9 @@ inputs:
   keep-haskell:
     description: Keep Haskell (GHCup, GHC, Cabal, Stack)
     default: ''
+  keep-miniconda:
+    description: Keep Miniconda
+    default: ''
   keep-homebrew:
     description: Keep Homebrew
     default: ''
@@ -176,6 +179,15 @@ runs:
         sudo rm -rf /usr/local/.ghcup ~/.ghcup ~/.cabal &
         # Remove binaries from PATH
         sudo rm -f /usr/local/bin/ghc* /usr/local/bin/cabal /usr/local/bin/stack /usr/local/bin/haskell-language-server* &
+    - name: Remove Miniconda
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-miniconda.sh
+      shell: bash
+      if: ${{ inputs.keep-miniconda == '' }}
+      id: miniconda
+      run: |
+        echo "Removing Miniconda"
+        sudo rm -rf /usr/share/miniconda &
+        sudo rm -f /usr/bin/conda &
     - name: Remove Homebrew
       # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-homebrew.sh
       shell: bash
