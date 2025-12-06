@@ -43,12 +43,14 @@ jobs:
           exists azure /opt/az
           exists powershell /usr/local/share/powershell
           exists ansible /opt/pipx/venvs/ansible-core
+          exists dotnet /usr/share/dotnet
       - name: Checkout
         uses: actions/checkout@v2
       - name: Clean Ubuntu
         if: ${{ runner.environment == 'github-hosted' }}
         uses: ./ # Uses an action in the root directory
         with:
+          keep-dotnet: ${{ matrix.keep-all }}
           keep-android: ${{ matrix.keep-all }}
           keep-rustup: ${{ matrix.keep-all }}
           keep-azure: ${{ matrix.keep-all }}
@@ -85,6 +87,28 @@ jobs:
           check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.azure }}' /opt/az
           check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.powershell }}' /usr/local/share/powershell
           check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.ansible }}' /opt/pipx/venvs/ansible-core
+          check_dir '${{ matrix.keep-all }}${{ steps.dirs.outputs.dotnet }}' /usr/share/dotnet
+      - name: Check DOTNET environment variables were unset
+        if: ${{ matrix.keep-all == '' && steps.dirs.outputs.dotnet == 'exists' }}
+        run: |
+          if [[ -n "${DOTNET_ROOT}" ]]; then
+            echo "DOTNET_ROOT should be unset but is: ${DOTNET_ROOT}"
+            exit 1
+          fi
+          if [[ -n "${DOTNET_SKIP_FIRST_TIME_EXPERIENCE}" ]]; then
+            echo "DOTNET_SKIP_FIRST_TIME_EXPERIENCE should be unset but is: ${DOTNET_SKIP_FIRST_TIME_EXPERIENCE}"
+            exit 1
+          fi
+          if [[ -n "${DOTNET_NOLOGO}" ]]; then
+            echo "DOTNET_NOLOGO should be unset but is: ${DOTNET_NOLOGO}"
+            exit 1
+          fi
+          if [[ -n "${DOTNET_MULTILEVEL_LOOKUP}" ]]; then
+            echo "DOTNET_MULTILEVEL_LOOKUP should be unset but is: ${DOTNET_MULTILEVEL_LOOKUP}"
+            exit 1
+          fi
+          echo "All DOTNET environment variables successfully unset"
+
       - name: Check disk space at end
         if: always()
         run: |

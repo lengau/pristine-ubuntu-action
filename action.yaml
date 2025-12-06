@@ -19,6 +19,9 @@ inputs:
   keep-ansible:
     description: Keep Ansible
     default: ''
+  keep-dotnet:
+    description: Keep .NET Core SDK
+    default: ''
 
 runs:
   using: 'composite'
@@ -125,3 +128,35 @@ runs:
       id: ansible
       run: |
         sudo rm -rf /opt/pipx_bin/ansible* /opt/pipx/venvs/ansible-core &
+    - name: Remove .NET Core SDK
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-dotnetcore-sdk.sh
+      shell: bash
+      if: ${{ inputs.keep-dotnet == '' }}
+      id: dotnet
+      run: |
+        echo "Removing .NET Core SDK"
+        
+        # Unset DOTNET environment variables
+        echo "DOTNET_ROOT=" >> "${GITHUB_ENV}"
+        echo "DOTNET_SKIP_FIRST_TIME_EXPERIENCE=" >> "${GITHUB_ENV}"
+        echo "DOTNET_NOLOGO=" >> "${GITHUB_ENV}"
+        echo "DOTNET_MULTILEVEL_LOOKUP=" >> "${GITHUB_ENV}"
+        
+        # Remove dotnet-sdk packages first
+        DOTNET_PACKAGES=$(dpkg -l | grep -E '^ii\s+dotnet-sdk-' | awk '{print $2}' || true)
+        if [ -n "$DOTNET_PACKAGES" ]; then
+          for pkg in $DOTNET_PACKAGES; do
+            # Only suppress "not installed" error, surface unexpected errors
+            if ! sudo apt-get --yes purge "$pkg"; then
+              if ! apt list --installed 2>/dev/null | grep -q "^$pkg/"; then
+                echo "$pkg not installed, ignoring error."
+              else
+                echo "Unexpected error removing $pkg" >&2
+                exit 1
+              fi
+            fi
+          done
+        fi
+        
+        # Remove directory after packages are purged
+        sudo rm -rf /usr/share/dotnet &
