@@ -22,6 +22,8 @@ inputs:
   keep-dotnet:
     description: Keep .NET Core SDK
     default: ''
+  keep-miniconda:
+    description: Keep Miniconda
   keep-homebrew:
     description: Keep Homebrew
     default: ''
@@ -163,6 +165,15 @@ runs:
         
         # Remove directory after packages are purged
         sudo rm -rf /usr/share/dotnet &
+    - name: Remove Miniconda
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-miniconda.sh
+      shell: bash
+      if: ${{ inputs.keep-miniconda == '' }}
+      id: miniconda
+      run: |
+        echo "Removing Miniconda"
+        sudo rm -rf /usr/share/miniconda &
+        sudo rm -f /usr/bin/conda &
     - name: Remove Homebrew
       # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-homebrew.sh
       shell: bash
