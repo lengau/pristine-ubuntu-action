@@ -24,6 +24,8 @@ inputs:
     default: ''
   keep-miniconda:
     description: Keep Miniconda
+  keep-homebrew:
+    description: Keep Homebrew
     default: ''
 
 runs:
@@ -172,3 +174,11 @@ runs:
         echo "Removing Miniconda"
         sudo rm -rf /usr/share/miniconda &
         sudo rm -f /usr/bin/conda &
+    - name: Remove Homebrew
+      # https://github.com/actions/runner-images/blob/main/images/ubuntu/scripts/build/install-homebrew.sh
+      shell: bash
+      if: ${{ inputs.keep-homebrew == '' }}
+      id: homebrew
+      run: |
+        echo "Removing Homebrew"
+        sudo rm -rf /home/linuxbrew/.linuxbrew &

@@ -29,6 +29,7 @@ of the action to keep that particular item:
 - `keep-ansible`
 - `keep-azure`
 - `keep-dotnet`
+- `keep-homebrew`
 - `keep-miniconda`
 - `keep-rustup`
 
